@@ -1,0 +1,42 @@
+/* Flex Properties style */
+
+.flex-container
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.grid
+{
+    display: inherit;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.grid-row
+{
+    display: inherit;
+    flex-direction: row;
+}
+
+.grid-column
+{
+    height: 35px;
+    width: 35px;
+    border: 2px solid blueviolet;
+}
+
+/* Variable section styling */
+
+.variables
+{
+    display: inherit;
+    flex-direction: column;
+}
+
+.variables input[type="text"]
+{
+    margin-bottom:10px;
+    padding : 5px;
+}

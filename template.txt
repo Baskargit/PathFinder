@@ -1,0 +1,7 @@
+<div class="grid-row">
+    <div class="grid-column"></div>
+    <div class="grid-column"></div>
+    <div class="grid-column"></div>
+    <div class="grid-column"></div>
+    <div class="grid-column"></div>
+</div>
