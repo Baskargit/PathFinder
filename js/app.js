@@ -11,21 +11,22 @@ var nonWallColour = "transparent";
 var traversedColor = "blue";
 var gridColour = "blueviolet";
 
+// Javascript functions
 function setGridColours() 
 {
     for(var i = 0; i < row; i++)
     {
         for(var j = 0; j < column; j++)
         {
-            $("#" + i + "" + j).css("background-color",nonWallColour);
+            $("#" + i + "_" + j).css("background-color",nonWallColour);
         }
     }
 
     // Set Source colour
-    $("#00").css("background-color",sourceColor);
+    $("#0_0").css("background-color",sourceColor);
 
     // Set Destination colour
-    $("#" + (row - 1) + "" + (column - 1)).css("background-color",destinationColor);
+    $("#" + (row - 1) + "_" + (column - 1)).css("background-color",destinationColor);
 }
 
 function drawGrid() 
@@ -41,8 +42,8 @@ function drawGrid()
 
         for(var j = 0; j < column; j++)
         {
-            var id = i + "" + j;
-            gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"setCellType(" + '\'' + i + ' ' + j + '\'' + ")\"" + ">";
+            var id = i + "_" + j;
+            gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"setCellType(" + '\'' + id + '\'' + ")\"" + ">";
             gridContent += "</div>";
         }
         
@@ -85,12 +86,12 @@ function setCellType(posId)
     // Not an alteration in matrix
     if (!window.event.altKey) 
     {
-        var splitted = (posId != null) ? posId.split(" ") : null ;
+        var splitted = (posId != null) ? posId.split("_") : null ;
 
         if (splitted != null && splitted.length == 2) 
         {
             // If Position is not both the source and destination then update the data and UI element
-            if (splitted[0] + splitted[1] != "00" && splitted[0] + splitted[1] != (row - 1) + "" + (column - 1)) 
+            if (posId != "0_0" && splitted[0] + "_" + splitted[1] != (row - 1) + "_" + (column - 1)) 
             {
                 // If ctrl key is pressed then make it Block (1)
                 if (window.event.ctrlKey) 
@@ -101,7 +102,7 @@ function setCellType(posId)
                         matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 1;
 
                         // Update UI with appropriate colour as per configuration setting
-                        setCellColour(posId.replace(/\s/g,''),wallColour);
+                        setCellColour(posId,wallColour);
                     }
                 } 
                 else
@@ -110,10 +111,9 @@ function setCellType(posId)
                     matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 0;
 
                     // Update UI with appropriate colour as per configuration setting
-                    setCellColour(posId.replace(/\s/g,''),nonWallColour);
+                    setCellColour(posId,nonWallColour);
                 }
             }
-            
         }
     } 
 }
