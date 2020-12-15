@@ -50,6 +50,7 @@ function drawGrid()
         gridContent += "</div>";
     }
 
+    // Add all the cell blocks to UI grid
     $(".grid").append(gridContent);
 }
 
@@ -147,8 +148,24 @@ document.addEventListener("DOMContentLoaded", function()
         drawGrid();
         setGridColours();
     });
+
+    // FindPath button clicked
+    document.getElementById("findPath").addEventListener('click', function()
+    {
+        var result = findPath(row,column,matrix,0,0);
+        console.log(result);
+    });
 });
 
 // Jquery functions
+
+
+// -------------------------------> Path Finding Logic --------------------------------------->
+
+function findPath(n,m,matrix,currentN,currentM) 
+{
+    console.log("recursive");
+    return true;
+}
 
 
