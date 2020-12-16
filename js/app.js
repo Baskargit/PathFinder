@@ -1,7 +1,9 @@
 // Initialise required variables
 var row = 5;
 var column = 5;
-var matrix = create2dArray(row,column);
+var matrix = create2dArray(row,column); // Number
+var traversedMatrix = create2dArray(row,column,false); // boolean
+var ranCount = 0;
 
 // Initialise colour variables
 var sourceColor = "red";
@@ -10,6 +12,11 @@ var wallColour = "black";
 var nonWallColour = "transparent";
 var traversedColor = "blue";
 var gridColour = "blueviolet";
+
+// Animation Oriented variables
+var traversedPaths = [];
+var transitionDuration = 1.5; // Seconds
+var cellToCellDelay = 200; // milliseconds
 
 // Javascript functions
 function setGridColours() 
@@ -54,7 +61,7 @@ function drawGrid()
     $(".grid").append(gridContent);
 }
 
-function create2dArray(n = 1,m = 1) 
+function create2dArray(n = 1,m = 1,defaultValue = 0) 
 {
     // Initialise 1st dimension
     var matrix = new Array(n);
@@ -74,7 +81,7 @@ function create2dArray(n = 1,m = 1)
         for (var j = 0; j < m; j++)
         {
             // Initially set all cells as traversable one
-            matrix[i][j] = 0;
+            matrix[i][j] = defaultValue;
         }
     }
 
@@ -119,12 +126,91 @@ function setCellType(posId)
     } 
 }
 
-function setCellColour(cellId,colour = "transparent") 
+function setCellColour(cellId,colour = nonWallColour)
 {
     if (cellId != null) 
     {
         $("#" + cellId).css("background-color",colour);
     }    
+}
+
+function setTraverseCellAnimation(cellId,duration = transitionDuration) 
+{
+    if (cellId != null) 
+    {
+        $("#" + cellId).css("transition","background-color " + duration + "s" + " ease");
+    }
+}
+
+function drawTraversedPaths(isEraseOperation = false,traverseColor = traversedColor,duration = transitionDuration,redrawGrid = false) 
+{
+    if (traversedPaths != null)
+    {
+        var index = 0;
+
+        // Draw animated path flow in forward direction
+        if (!isEraseOperation) 
+        {
+            var handler = setInterval(function() 
+            { 
+                if (index >= traversedPaths.length) 
+                {
+                    clearInterval(handler);
+                    console.log("forward Clear interval");
+                    return;
+                }
+
+                setInterval(setCellColour(traversedPaths[index],traverseColor),cellToCellDelay);
+                setInterval(setTraverseCellAnimation(traversedPaths[index],duration),cellToCellDelay);
+                
+                index++;
+                
+                console.log("forward set Interval");
+
+            } , cellToCellDelay);
+        }
+        else
+        {
+            index = traversedPaths.length - 1;
+
+            // Draw animated path flow in reverse direction
+            var handler1 = setInterval(function() 
+            { 
+                if (index < 0)
+                {
+                    if (redrawGrid) 
+                    {
+                        // Redraw the grid
+                        drawGrid();
+                        // Set Initial Colors
+                        setGridColours();
+                        // Clear traversedPath array 
+                        clearTraversedPath();
+                    }
+
+                    clearInterval(handler1);
+                    console.log("reverse Clear interval");
+                    return;
+                }
+                else
+                {
+                    setInterval(setCellColour(traversedPaths[index],traverseColor),cellToCellDelay);
+                    setInterval(setTraverseCellAnimation(traversedPaths[index],duration),cellToCellDelay);
+                    
+                    index--;
+
+                    console.log("reverse set Interval");
+                }
+            } , cellToCellDelay);
+        }
+    }    
+}
+
+function clearTraversedPath() 
+{
+    // Remove all old references for traversed paths
+    // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+    traversedPaths.length = 0;    
 }
 
 // Js eventlistener function block
@@ -134,8 +220,10 @@ document.addEventListener("DOMContentLoaded", function()
     // RowCount input change
     document.getElementById("rowCount").addEventListener('input', function()
     {
-        row = ($("#rowCount").val() > 0) ? $("#rowCount").val() : row;
+        var parsed = parseInt($("#rowCount").val());
+        row = (parsed > 0) ? parsed : row;
         matrix = create2dArray(row,column);
+        traversedMatrix = create2dArray(row,column,false);
         drawGrid();
         setGridColours();
     });
@@ -143,8 +231,10 @@ document.addEventListener("DOMContentLoaded", function()
     // ColumnCount input change
     document.getElementById("columnCount").addEventListener('input', function()
     {
-        column = ($("#columnCount").val() > 0) ? $("#columnCount").val() : column;
+        var parsed = $("#columnCount").val();
+        column = (parsed > 0) ? parsed : column;
         matrix = create2dArray(row,column);
+        traversedMatrix = create2dArray(row,column,false);
         drawGrid();
         setGridColours();
     });
@@ -152,8 +242,41 @@ document.addEventListener("DOMContentLoaded", function()
     // FindPath button clicked
     document.getElementById("findPath").addEventListener('click', function()
     {
-        var result = findPath(row,column,matrix,0,0);
-        console.log(result);
+        // If Start button clicked multiple times
+        traversedMatrix = (ranCount++ > 0) ? create2dArray(row,column) : traversedMatrix;
+
+        var isPathFound = findPath(row,column,matrix,traversedMatrix,0,0);
+
+        console.log("Is Pathfound : " + isPathFound);
+
+        if (isPathFound) 
+        {
+            // Animate traversed Paths
+            // drawTraversedPaths();
+            drawTraversedPaths(false,traversedColor,transitionDuration,false);
+        }
+        else
+        {
+            alert("No Path found");
+        }
+
+        // Re-Assign traversed matrix for re-using the same path configuration 
+        traversedMatrix = create2dArray(row,column,false);
+    });
+
+    // Clear button clicked
+    document.getElementById("clear").addEventListener('click', function()
+    {
+        // Reset all the traversed path colour
+        drawTraversedPaths(true,"transparent",1,true);
+
+        // Reset the matrix (only realted to code level)
+        matrix = create2dArray(row,column,0);
+
+        // Manually clear all traversedPath (only realted to code level)
+        // clearTraversedPath();
+
+        ranCount = 0;
     });
 });
 
@@ -162,10 +285,38 @@ document.addEventListener("DOMContentLoaded", function()
 
 // -------------------------------> Path Finding Logic --------------------------------------->
 
-function findPath(n,m,matrix,currentN,currentM) 
+function findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM) 
 {
-    console.log("recursive");
-    return true;
+    if ((currentN >= 0 && currentM >= 0) && (currentN < n && currentM < m)) 
+    {
+        // Current cell should not be traversed and also be a trversable path (0)
+        if (!backtrackMatrix[currentN][currentM] && pathMatrix[currentN][currentM] == 0) 
+        {
+            if (currentN == n - 1 && currentM == m - 1) 
+            {
+                // Destination found
+                return true;
+            }
+
+            backtrackMatrix[currentN][currentM] = true;
+
+            if (!(currentN == 0 && currentM == 0)) 
+            {
+                // Add all the traversed path into an new array for Backtracking(For UI) purpose
+                traversedPaths.push(currentN + "_" + currentM);
+            }
+
+            return findPath(n,m,pathMatrix,backtrackMatrix,currentN - 1,currentM) // UP
+            ||
+            findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM + 1) // Right
+            ||
+            findPath(n,m,pathMatrix,backtrackMatrix,currentN + 1,currentM) // Down
+            ||
+            findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM - 1); // Left
+        }
+    }
+
+    return false;
 }
 
 
