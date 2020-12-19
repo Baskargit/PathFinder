@@ -1,4 +1,4 @@
-# PathFinder
+# PathFinding Visualizer
 
 This tool is used for visualizing how a PathFinding algorithim works. After downloading, unzip it. 
 
