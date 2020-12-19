@@ -3,7 +3,7 @@ var row = 5;
 var column = 5;
 var matrix = [];
 var traversedMatrix = [];
-var mask = false;
+var isMasked = false;
 
 // Initialise colour variables
 var sourceColor = "red";
@@ -23,9 +23,10 @@ var revCellToCellDelay = 50; // milliseconds
 // DOM element centralized Id variables
 var findPathButtonId = "findPath";
 var reRunAnimationButtonId = "reRunAnimation";
-var clearButtonId = "clear";
+var resetButtonId = "reset";
 var rowCountInputId = "rowCount";
 var columnCountInputId = "columnCount";
+var updateCurrentGridButtonId = "updateCurrentGrid";
 
 // Javascript functions
 
@@ -120,7 +121,7 @@ function create2dArray(n = 1,m = 1,defaultValue = 0)
 function setCellType(posId) 
 {
     // Not an alteration in matrix (or) Not masked (meaning, if user clicked 'FindPath' then no other alteration on the matrix is allowed)
-    if (!mask && !window.event.altKey) 
+    if (!isMasked && !window.event.altKey) 
     {
         var splitted = (posId != null) ? posId.split("_") : null ;
 
@@ -129,26 +130,16 @@ function setCellType(posId)
             // If Position is not both the source and destination then update the data and UI element
             if (posId != "0_0" && splitted[0] + "_" + splitted[1] != (row - 1) + "_" + (column - 1)) 
             {
-                // If ctrl key is pressed then make it Block or Wall (1)
-                if (window.event.ctrlKey) 
-                {
-                    if (splitted != null) 
-                    {
-                        // Make matrix cell as block
-                        matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 1;
+                // Get cell type
+                // 1 => Block (or) wall
+                // 0 => Travesable path
+                var value = (window.event.ctrlKey) ? 1 : 0 ;
 
-                        // Update UI with appropriate colour as per configuration setting
-                        setCellColour(posId,wallColour);
-                    }
-                } 
-                else
-                {
-                    // Make matrix cell as travesable path
-                    matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 0;
+                // Assign cell type
+                matrix[parseInt(splitted[0])][parseInt(splitted[1])] = value;
 
-                    // Update UI with appropriate colour as per configuration setting
-                    setCellColour(posId,nonWallColour);
-                }
+                // Update UI with appropriate colour as per configuration setting
+                setCellColour(posId,(value == 1) ? wallColour : nonWallColour);
             }
         }
     } 
@@ -224,7 +215,8 @@ function clearTraversedPath()
 function loadButtonDefaults() 
 {
     disableButton(reRunAnimationButtonId);
-    disableButton(clearButtonId);
+    disableButton(resetButtonId);
+    disableButton(updateCurrentGridButtonId);
     enableButton(findPathButtonId);
 }
 
@@ -275,8 +267,8 @@ document.addEventListener("DOMContentLoaded", function()
 
         if (isPathFound) 
         {
-            // Enable masking
-            mask = true;
+            // Disable masking
+            isMasked = true;
 
             // Animate traversed Paths
             drawSourceToDestination(traversedColor,fwdTransitionDuration,fwdCellToCellDelay);
@@ -288,15 +280,20 @@ document.addEventListener("DOMContentLoaded", function()
             {
                 // Enable buttons once animation is done
                 enableButton(reRunAnimationButtonId);
-                enableButton(clearButtonId);
+                enableButton(resetButtonId);
+                enableButton(updateCurrentGridButtonId);
+
                 clearTimeout(handler);
-                console.log("set timeout done : " + timeTakenToDraw);
             },timeTakenToDraw);
         }
         else
         {
             // Initialize new matrix, so that further Pathfinding will be enabled.
             traversedMatrix = create2dArray(row,column,false);
+
+            // Clear old stack for newer path configuration
+            clearTraversedPath();
+
             enableButton(findPathButtonId);
             alert("No Path found");
         }
@@ -307,7 +304,8 @@ document.addEventListener("DOMContentLoaded", function()
     {
         // Disable both the Re-Run and Reset button to avoid unwanted glitches on UI while rendering (if user click other buttons, animations may vary and show weird animations)
         disableButton(reRunAnimationButtonId);
-        disableButton(clearButtonId);
+        disableButton(resetButtonId);
+        disableButton(updateCurrentGridButtonId);
 
         // Just reverse animation
         // Function re-used with redrawing = false
@@ -328,7 +326,8 @@ document.addEventListener("DOMContentLoaded", function()
             {
                 // Enable buttons once animation is done
                 enableButton(reRunAnimationButtonId);
-                enableButton(clearButtonId);
+                enableButton(resetButtonId);
+                enableButton(updateCurrentGridButtonId);
                 
                 // Clear the timeout
                 clearTimeout(fwdHandler);
@@ -340,10 +339,11 @@ document.addEventListener("DOMContentLoaded", function()
     });
 
     // Clear button clicked
-    document.getElementById("clear").addEventListener('click', function()
+    document.getElementById("reset").addEventListener('click', function()
     {
-        disableButton(clearButtonId);
+        disableButton(resetButtonId);
         disableButton(reRunAnimationButtonId);
+        disableButton(updateCurrentGridButtonId);
 
         // Reset all the traversed path colour
         drawDestinationToSource("transparent",revTransitionDuration,revCellToCellDelay);
@@ -364,7 +364,40 @@ document.addEventListener("DOMContentLoaded", function()
             enableButton(columnCountInputId);
 
             // Disable masking for making changes in source matrix (or) maze
-            mask = false;
+            isMasked = false;
+
+            // Clear the timeout
+            clearTimeout(revHandler);
+        },revTimeTakenToDraw);
+    });
+
+    // Update button clicked
+    document.getElementById("updateCurrentGrid").addEventListener('click', function()
+    {
+        // Disbale buttons
+        disableButton(updateCurrentGridButtonId);
+        disableButton(resetButtonId);
+        disableButton(reRunAnimationButtonId);
+
+        // Reset all the traversed path colour
+        drawDestinationToSource("transparent",revTransitionDuration,revCellToCellDelay);
+
+        // Calculate time based on revCellToCellDelay configuration (In milliseconds)
+        var revTimeTakenToDraw = (revCellToCellDelay * traversedPaths.length) + 500;
+
+        var revHandler = window.setTimeout(function()
+        {
+            // Enable masking for making changes in source matrix (or) maze
+            isMasked = false;
+
+            // Initialize new matrix, so that further Pathfinding will be enabled.
+            traversedMatrix = create2dArray(row,column,false);
+
+            // Clear old stack for newer path configuration
+            clearTraversedPath();
+
+            // Enable input for further modification
+            loadButtonDefaults();
 
             // Clear the timeout
             clearTimeout(revHandler);
