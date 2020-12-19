@@ -1,8 +1,8 @@
 // Initialise required variables
 var row = 5;
 var column = 5;
-var matrix = create2dArray(row,column);
-var traversedMatrix = create2dArray(row,column,false);
+var matrix = [];
+var traversedMatrix = [];
 var mask = false;
 
 // Initialise colour variables
@@ -28,6 +28,25 @@ var rowCountInputId = "rowCount";
 var columnCountInputId = "columnCount";
 
 // Javascript functions
+
+function Initialize() 
+{
+    // Initialize new matrix with no walls configuration
+    matrix = create2dArray(row,column,0);
+
+    // Initialize traversedMatrix with all paths as non-traversed
+    traversedMatrix = create2dArray(row,column,false);
+
+    // Clear traversedPath array {important}
+    clearTraversedPath();
+
+    // Redraw the grid
+    drawGrid();
+    
+    // Set Initial Colors
+    setGridColours();
+}
+
 function setGridColours() 
 {
     for(var i = 0; i < row; i++)
@@ -115,7 +134,7 @@ function setCellType(posId)
                 {
                     if (splitted != null) 
                     {
-                        // Make matrix cell as block for backend logic
+                        // Make matrix cell as block
                         matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 1;
 
                         // Update UI with appropriate colour as per configuration setting
@@ -124,7 +143,7 @@ function setCellType(posId)
                 } 
                 else
                 {
-                    // Make matrix cell as block for backend logic
+                    // Make matrix cell as travesable path
                     matrix[parseInt(splitted[0])][parseInt(splitted[1])] = 0;
 
                     // Update UI with appropriate colour as per configuration setting
@@ -241,9 +260,6 @@ document.addEventListener("DOMContentLoaded", function()
     // FindPath button clicked
     document.getElementById("findPath").addEventListener('click', function()
     {
-        // Enable masking
-        mask = true;
-
         // Disable buttons
         disableButton(findPathButtonId);
         disableButton(rowCountInputId);
@@ -259,6 +275,9 @@ document.addEventListener("DOMContentLoaded", function()
 
         if (isPathFound) 
         {
+            // Enable masking
+            mask = true;
+
             // Animate traversed Paths
             drawSourceToDestination(traversedColor,fwdTransitionDuration,fwdCellToCellDelay);
 
@@ -276,6 +295,8 @@ document.addEventListener("DOMContentLoaded", function()
         }
         else
         {
+            // Initialize new matrix, so that further Pathfinding will be enabled.
+            traversedMatrix = create2dArray(row,column,false);
             enableButton(findPathButtonId);
             alert("No Path found");
         }
@@ -332,19 +353,8 @@ document.addEventListener("DOMContentLoaded", function()
 
         var revHandler = window.setTimeout(function()
         {
-            // Initialize new matrix with no walls configuration
-            matrix = create2dArray(row,column,0);
-
-            // Initialize traversedMatrix
-            traversedMatrix = create2dArray(row,column,false);
-
-            // Clear traversedPath array {important}
-            clearTraversedPath();
-
-            // Redraw the grid
-            drawGrid();
-            // Set Initial Colors
-            setGridColours();
+            // Refresh the view
+            Initialize();
 
             // Load deafult enabled buttons
             loadButtonDefaults();
@@ -366,13 +376,13 @@ document.addEventListener("DOMContentLoaded", function()
 // Jquery functions
 
 
-// -------------------------------> Path Finding Logic --------------------------------------->
+// ------------------------------------------------> Path Finding Logic --------------------------------------->
 
 function findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM) 
 {
     if ((currentN >= 0 && currentM >= 0) && (currentN < n && currentM < m)) 
     {
-        // Current cell should not be traversed and also be a trversable path (0)
+        // Current cell should not be traversed and also be a traversable path (0)
         if (!backtrackMatrix[currentN][currentM] && pathMatrix[currentN][currentM] == 0) 
         {
             if (currentN == n - 1 && currentM == m - 1) 
@@ -403,10 +413,15 @@ function findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM)
 }
 
 /**
-Notes => Run code b/t intervals
+=======
+Notes:|
+=======
 
-setTimeout(function {},time) => onetime
-setInterval(function {},timeInMillseconds) => run continuously
+=======================
+Run code b/t intervals:|
+=======================
+setTimeout(function {},time) => onetime => makesure to call clearTimeout() {otherwise timer won't be cleared'}
+setInterval(function {},timeInMillseconds) => run continuously => makesure to call clearInterval()
 
 */
 
