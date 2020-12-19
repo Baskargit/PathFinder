@@ -35,7 +35,7 @@
     flex-direction: column;
 }
 
-.variables input[type="text"]
+.variables input[type="number"]
 {
     margin-bottom:10px;
     padding : 5px;

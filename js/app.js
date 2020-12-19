@@ -1,9 +1,9 @@
 // Initialise required variables
 var row = 5;
 var column = 5;
-var matrix = create2dArray(row,column); // Number
-var traversedMatrix = create2dArray(row,column,false); // boolean
-var ranCount = 0;
+var matrix = create2dArray(row,column);
+var traversedMatrix = create2dArray(row,column,false);
+var mask = false;
 
 // Initialise colour variables
 var sourceColor = "red";
@@ -15,8 +15,17 @@ var gridColour = "blueviolet";
 
 // Animation Oriented variables
 var traversedPaths = [];
-var transitionDuration = 1.5; // Seconds
-var cellToCellDelay = 200; // milliseconds
+var fwdTransitionDuration = 1; // Seconds
+var fwdCellToCellDelay = 250; // milliseconds
+var revTransitionDuration = 0.5; // Seconds
+var revCellToCellDelay = 50; // milliseconds
+
+// DOM element centralized Id variables
+var findPathButtonId = "findPath";
+var reRunAnimationButtonId = "reRunAnimation";
+var clearButtonId = "clear";
+var rowCountInputId = "rowCount";
+var columnCountInputId = "columnCount";
 
 // Javascript functions
 function setGridColours() 
@@ -91,8 +100,8 @@ function create2dArray(n = 1,m = 1,defaultValue = 0)
 // Set cell type like Block(1) or traversable path(0)
 function setCellType(posId) 
 {
-    // Not an alteration in matrix
-    if (!window.event.altKey) 
+    // Not an alteration in matrix (or) Not masked (meaning, if user clicked 'FindPath' then no other alteration on the matrix is allowed)
+    if (!mask && !window.event.altKey) 
     {
         var splitted = (posId != null) ? posId.split("_") : null ;
 
@@ -101,7 +110,7 @@ function setCellType(posId)
             // If Position is not both the source and destination then update the data and UI element
             if (posId != "0_0" && splitted[0] + "_" + splitted[1] != (row - 1) + "_" + (column - 1)) 
             {
-                // If ctrl key is pressed then make it Block (1)
+                // If ctrl key is pressed then make it Block or Wall (1)
                 if (window.event.ctrlKey) 
                 {
                     if (splitted != null) 
@@ -134,7 +143,7 @@ function setCellColour(cellId,colour = nonWallColour)
     }    
 }
 
-function setTraverseCellAnimation(cellId,duration = transitionDuration) 
+function setTraverseCellAnimation(cellId,duration = fwdTransitionDuration) 
 {
     if (cellId != null) 
     {
@@ -142,68 +151,48 @@ function setTraverseCellAnimation(cellId,duration = transitionDuration)
     }
 }
 
-function drawTraversedPaths(isEraseOperation = false,traverseColor = traversedColor,duration = transitionDuration,redrawGrid = false) 
+function drawSourceToDestination(traverseColor = traversedColor,duration = fwdTransitionDuration,ctc = fwdCellToCellDelay)
 {
-    if (traversedPaths != null)
+    var fwdhandler = setInterval(function() 
     {
-        var index = 0;
-
-        // Draw animated path flow in forward direction
-        if (!isEraseOperation) 
+        if (fwdIndex >= traversedPaths.length) 
         {
-            var handler = setInterval(function() 
-            { 
-                if (index >= traversedPaths.length) 
-                {
-                    clearInterval(handler);
-                    console.log("forward Clear interval");
-                    return;
-                }
-
-                setInterval(setCellColour(traversedPaths[index],traverseColor),cellToCellDelay);
-                setInterval(setTraverseCellAnimation(traversedPaths[index],duration),cellToCellDelay);
-                
-                index++;
-                
-                console.log("forward set Interval");
-
-            } , cellToCellDelay);
+            clearInterval(fwdhandler);
         }
         else
         {
-            index = traversedPaths.length - 1;
-
-            // Draw animated path flow in reverse direction
-            var handler1 = setInterval(function() 
-            { 
-                if (index < 0)
-                {
-                    if (redrawGrid) 
-                    {
-                        // Redraw the grid
-                        drawGrid();
-                        // Set Initial Colors
-                        setGridColours();
-                        // Clear traversedPath array 
-                        clearTraversedPath();
-                    }
-
-                    clearInterval(handler1);
-                    console.log("reverse Clear interval");
-                    return;
-                }
-                else
-                {
-                    setInterval(setCellColour(traversedPaths[index],traverseColor),cellToCellDelay);
-                    setInterval(setTraverseCellAnimation(traversedPaths[index],duration),cellToCellDelay);
-                    
-                    index--;
-
-                    console.log("reverse set Interval");
-                }
-            } , cellToCellDelay);
+            setCellColour(traversedPaths[fwdIndex],traverseColor);
+            setTraverseCellAnimation(traversedPaths[fwdIndex],duration);
+            fwdIndex++;            
         }
-    }    
+    } , ctc,fwdIndex = 0);
+}
+
+function drawDestinationToSource(traverseColor = traversedColor,duration = fwdTransitionDuration,ctc = fwdCellToCellDelay)
+{
+    var revHandler = setInterval(function() 
+    { 
+        if (revIndex < 0)
+        {
+            clearInterval(revHandler);
+        }
+        else
+        {
+            setCellColour(traversedPaths[revIndex],traverseColor);
+            setTraverseCellAnimation(traversedPaths[revIndex],duration)
+            revIndex--;
+        }
+    } , ctc,revIndex = traversedPaths.length - 1);
+}
+
+function disableButton(buttonId) 
+{
+    $('#' + buttonId).prop('disabled', true);
+}
+
+function enableButton(buttonId) 
+{
+    $('#' + buttonId).prop('disabled', false);
 }
 
 function clearTraversedPath() 
@@ -213,10 +202,20 @@ function clearTraversedPath()
     traversedPaths.length = 0;    
 }
 
+function loadButtonDefaults() 
+{
+    disableButton(reRunAnimationButtonId);
+    disableButton(clearButtonId);
+    enableButton(findPathButtonId);
+}
+
 // Js eventlistener function block
 
 document.addEventListener("DOMContentLoaded", function()
 {
+    // Disable the Reset and Re-Run Animation button by default
+    loadButtonDefaults();
+
     // RowCount input change
     document.getElementById("rowCount").addEventListener('input', function()
     {
@@ -232,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function()
     document.getElementById("columnCount").addEventListener('input', function()
     {
         var parsed = $("#columnCount").val();
-        column = (parsed > 0) ? parsed : column;
+        column = (parsed > 2) ? parsed : column;
         matrix = create2dArray(row,column);
         traversedMatrix = create2dArray(row,column,false);
         drawGrid();
@@ -242,8 +241,17 @@ document.addEventListener("DOMContentLoaded", function()
     // FindPath button clicked
     document.getElementById("findPath").addEventListener('click', function()
     {
-        // If Start button clicked multiple times
-        traversedMatrix = (ranCount++ > 0) ? create2dArray(row,column) : traversedMatrix;
+        // Enable masking
+        mask = true;
+
+        // Disable buttons
+        disableButton(findPathButtonId);
+        disableButton(rowCountInputId);
+        disableButton(columnCountInputId);
+
+        // Update row and column values
+        $("#rowCount").val(row);
+        $("#columnCount").val(column);
 
         var isPathFound = findPath(row,column,matrix,traversedMatrix,0,0);
 
@@ -252,32 +260,107 @@ document.addEventListener("DOMContentLoaded", function()
         if (isPathFound) 
         {
             // Animate traversed Paths
-            // drawTraversedPaths();
-            drawTraversedPaths(false,traversedColor,transitionDuration,false);
+            drawSourceToDestination(traversedColor,fwdTransitionDuration,fwdCellToCellDelay);
+
+            // Calculate time based on fwdCellToCellDelay configuration (In milliseconds)
+            var timeTakenToDraw = (fwdCellToCellDelay * traversedPaths.length) + 500;
+
+            var handler = window.setTimeout(function()
+            {
+                // Enable buttons once animation is done
+                enableButton(reRunAnimationButtonId);
+                enableButton(clearButtonId);
+                clearTimeout(handler);
+                console.log("set timeout done : " + timeTakenToDraw);
+            },timeTakenToDraw);
         }
         else
         {
+            enableButton(findPathButtonId);
             alert("No Path found");
         }
+    });
 
-        // Re-Assign traversed matrix for re-using the same path configuration 
-        traversedMatrix = create2dArray(row,column,false);
+    // Re-Run Animation button clicked
+    document.getElementById("reRunAnimation").addEventListener('click', function()
+    {
+        // Disable both the Re-Run and Reset button to avoid unwanted glitches on UI while rendering (if user click other buttons, animations may vary and show weird animations)
+        disableButton(reRunAnimationButtonId);
+        disableButton(clearButtonId);
+
+        // Just reverse animation
+        // Function re-used with redrawing = false
+        drawDestinationToSource("transparent",revTransitionDuration,revCellToCellDelay);
+
+        // Calculate time based on revCellToCellDelay configuration (In milliseconds)
+        var revTimeTakenToDraw = (revCellToCellDelay * traversedPaths.length) + 500;
+
+        var revHandler = window.setTimeout(function()
+        {
+            // Draw the traversedpath again
+            drawSourceToDestination(traversedColor,fwdTransitionDuration,fwdCellToCellDelay);
+
+            // Calculate time based on fwdCellToCellDelay configuration (In milliseconds)
+            var fwdTimeTakenToDraw = (fwdCellToCellDelay * traversedPaths.length) + 500;
+
+            var fwdHandler = setTimeout(function() 
+            {
+                // Enable buttons once animation is done
+                enableButton(reRunAnimationButtonId);
+                enableButton(clearButtonId);
+                
+                // Clear the timeout
+                clearTimeout(fwdHandler);
+            },fwdTimeTakenToDraw);
+
+            // Clear the timeout
+            clearTimeout(revHandler);
+        },revTimeTakenToDraw);
     });
 
     // Clear button clicked
     document.getElementById("clear").addEventListener('click', function()
     {
+        disableButton(clearButtonId);
+        disableButton(reRunAnimationButtonId);
+
         // Reset all the traversed path colour
-        drawTraversedPaths(true,"transparent",1,true);
+        drawDestinationToSource("transparent",revTransitionDuration,revCellToCellDelay);
 
-        // Reset the matrix (only realted to code level)
-        matrix = create2dArray(row,column,0);
+        // Calculate time based on revCellToCellDelay configuration (In milliseconds)
+        var revTimeTakenToDraw = (revCellToCellDelay * traversedPaths.length) + 500;
 
-        // Manually clear all traversedPath (only realted to code level)
-        // clearTraversedPath();
+        var revHandler = window.setTimeout(function()
+        {
+            // Initialize new matrix with no walls configuration
+            matrix = create2dArray(row,column,0);
 
-        ranCount = 0;
+            // Initialize traversedMatrix
+            traversedMatrix = create2dArray(row,column,false);
+
+            // Clear traversedPath array {important}
+            clearTraversedPath();
+
+            // Redraw the grid
+            drawGrid();
+            // Set Initial Colors
+            setGridColours();
+
+            // Load deafult enabled buttons
+            loadButtonDefaults();
+
+            // Enable input for further modification
+            enableButton(rowCountInputId);
+            enableButton(columnCountInputId);
+
+            // Disable masking for making changes in source matrix (or) maze
+            mask = false;
+
+            // Clear the timeout
+            clearTimeout(revHandler);
+        },revTimeTakenToDraw);
     });
+
 });
 
 // Jquery functions
@@ -319,4 +402,11 @@ function findPath(n,m,pathMatrix,backtrackMatrix,currentN,currentM)
     return false;
 }
 
+/**
+Notes => Run code b/t intervals
+
+setTimeout(function {},time) => onetime
+setInterval(function {},timeInMillseconds) => run continuously
+
+*/
 
