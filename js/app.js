@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function()
         },revTimeTakenToDraw);
     });
 
-    // Clear button clicked
+    // Reset button clicked
     document.getElementById("reset").addEventListener('click', function()
     {
         disableButton(resetButtonId);
@@ -402,6 +402,37 @@ document.addEventListener("DOMContentLoaded", function()
             // Clear the timeout
             clearTimeout(revHandler);
         },revTimeTakenToDraw);
+    });
+
+    // When slider value changed
+    document.getElementById("animationSpeed").addEventListener('click', function()
+    {
+        var val = $("#animationSpeed").val();
+
+        if (val != null && val >= 1 && val <= 10) 
+        {
+            if (val > 5) 
+            {
+                fwdCellToCellDelay = 250 - (45 * (val - 5));
+                fwdTransitionDuration = 1 - (0.09 * (val - 5));
+
+                revCellToCellDelay = 50 - (5 * (val - 5));
+            }
+            else if (val < 5)
+            {
+                fwdCellToCellDelay = 250 + (45 * (5 - val));
+                fwdTransitionDuration = 1 + (0.1 * (5 - val));
+            }
+            else
+            {
+                // Set Default speed
+                fwdTransitionDuration = 1; // Seconds
+                fwdCellToCellDelay = 250; // milliseconds
+
+                revTransitionDuration = 0.5; // Seconds
+                revCellToCellDelay = 50; // milliseconds
+            }
+        }
     });
 
 });

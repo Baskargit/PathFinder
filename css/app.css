@@ -35,14 +35,31 @@
     flex-direction: column;
 }
 
-.variables input[type="number"]
+.rowContainer
+{
+    display: inherit;
+    flex-direction: row;
+    margin-right: 5px;
+}
+
+.columnContainer
+{
+    display: inherit;
+    flex-direction: column;
+}
+
+.variables input
 {
     margin-bottom:10px;
+}
+
+.variables input[type="number"]
+{
     padding : 5px;
 }
 
 .variables input[type="button"]
 {
-    margin-bottom:10px;
-    padding : 5px;
+    padding : 10px;
+    border-radius: 10px;
 }

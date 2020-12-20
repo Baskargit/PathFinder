@@ -13,10 +13,23 @@
         <div class="variables">
             <input type="number" id="rowCount" placeholder="RowCount"/>
             <input type="number" id="columnCount" placeholder="ColumnCount"/>
-            <input type="button" id="findPath" value="FindPath">
-            <input type="button" id="reRunAnimation" value="Re-Run Animation">
-            <input type="button" id="reset" value="Reset">
-            <input type="button" id="updateCurrentGrid" value="Update Grid">
+
+            <input type="range" id="animationSpeed" min="1" max="10" value = "5"/>
+
+            <div class="rowContainer">
+                <div class="rowContainer">
+                    <div class="columnContainer">
+                        <input type="button" id="findPath" value="FindPath">
+                        <input type="button" id="reRunAnimation" value="Re-Run Animation">
+                    </div>
+                </div>
+                <div class="rowContainer">
+                    <div class="columnContainer">
+                        <input type="button" id="reset" value="Reset">
+                        <input type="button" id="updateCurrentGrid" value="Update Grid">
+                    </div>
+                </div> 
+            </div>
         </div>
     </div>
 </body>
