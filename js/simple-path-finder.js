@@ -5,28 +5,11 @@ class SimplePathFinder extends GridUi
         // Call base constructor with all the required parameters
         super(row, col,0,"grid");
 
-        // Common Objects
-        this.miscConfig = new MiscConfig();
-
         // UI related variables for displaying traversedPaths in the grid
         this.traversedPaths = [];
 
         // Variable for Backtracking purpose
         this.backtrackMatrix = [];
-    }
-
-    updateGridConfiguration()
-    {
-        // Update matrix as per new RowCount value with default value 0
-        this.updateMatrix(this.rowCount,this.colCount,0);
-
-        // Update the grid UI as per new RowCount value
-        this.drawGrid();
-
-        // Disable the Reset and Re-Run Animation button by default
-        this.miscConfig.loadButtonDefaults();
-
-        // console.log(this);
     }
 
     clearTraversedPath() 
@@ -90,8 +73,6 @@ document.addEventListener("DOMContentLoaded", function()
     
     // Draw the initial default size Grid 5 X 5
     simplePathFinder.drawGrid();
-
-    console.log(simplePathFinder);
 
     // RowCount input change
     document.getElementById("rowCount").addEventListener('input', function()

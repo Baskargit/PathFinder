@@ -50,8 +50,11 @@ class GridUi extends Grid
         // GridUI related properties
         this.colorConfig = new ColorConfig();
         this.animationConfig = new AnimationConfig();
+        this.miscConfig = new MiscConfig();
         this.gridClassName = gridClassName;
         this.isMasked = false;
+        this.gridSource = "0_0";
+        this.gridDestination = (this.rowCount - 1) + "_" + (this.colCount - 1);
     }
 
     generateGrid()
@@ -87,10 +90,10 @@ class GridUi extends Grid
         }
 
         // Set Source colour
-        $("#0_0").css("background-color",this.colorConfig.sourceColor);
+        $("#" + this.gridSource).css("background-color",this.colorConfig.sourceColor);
 
         // Set Destination colour
-        $("#" + (this.rowCount - 1) + "_" + (this.colCount - 1)).css("background-color",this.colorConfig.destinationColor);
+        $("#" + this.gridDestination).css("background-color",this.colorConfig.destinationColor);
     }
 
     drawGrid()
@@ -103,6 +106,9 @@ class GridUi extends Grid
 
         // Add all the cell blocks to UI grid
         $("." + this.gridClassName).append(gridContent);
+
+        // Update the gridDestination as per the new grid size configuration
+        this.gridDestination = (this.rowCount - 1) + "_" + (this.colCount - 1);
 
         // Set Grid Colors as per color configuration
         this.setGridColours();
@@ -176,7 +182,7 @@ class GridUi extends Grid
             if (splitted != null && splitted.length == 2) 
             {
                 // If Position is not both the source and destination then update the data and UI element
-                if (posId != "0_0" && splitted[0] + "_" + splitted[1] != (this.rowCount - 1) + "_" + (this.colCount - 1))
+                if (posId != this.gridSource && splitted[0] + "_" + splitted[1] != this.gridDestination)
                 {
                     // Get cell type
                     // 1 => Block (or) wall
@@ -191,6 +197,18 @@ class GridUi extends Grid
                 }
             }
         } 
+    }
+    
+    updateGridConfiguration()
+    {
+        // Update matrix as per new RowCount value with default value 0
+        this.updateMatrix(this.rowCount,this.colCount,0);
+
+        // Update the grid UI as per new RowCount value
+        this.drawGrid();
+
+        // Disable the Reset and Re-Run Animation button by default
+        this.miscConfig.loadButtonDefaults();
     }
     
 }
