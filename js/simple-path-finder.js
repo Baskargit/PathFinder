@@ -8,6 +8,10 @@ class SimplePathFinder extends GridUi
         // UI related variables for displaying traversedPaths in the grid
         this.traversedPaths = [];
 
+        // This variables are needed while hovering over a grid cell and also dynamically the contents are genereated based on this key config for drawGrid()
+        this.objKey = "simplePathFinder";
+        this.setCellTypeKey = this.objKey;
+
         // Variable for Backtracking purpose
         this.backtrackMatrix = [];
     }

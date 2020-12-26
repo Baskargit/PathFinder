@@ -55,6 +55,11 @@ class GridUi extends Grid
         this.isMasked = false;
         this.gridSource = "0_0";
         this.gridDestination = (this.rowCount - 1) + "_" + (this.colCount - 1);
+        this.setCellTypeKey = "";
+
+        // GridCell properties
+        this.gridBorderWidth = 2;
+        this.gridCellSize = 35 + (this.gridBorderWidth * 2); // Border of both left and right
     }
 
     generateGrid()
@@ -68,7 +73,7 @@ class GridUi extends Grid
             for(var j = 0; j < this.colCount; j++)
             {
                 var id = i + "_" + j;
-                gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"window.simplePathFinder.setCellType(" + '\'' + id + '\'' + ")\"" + ">";
+                gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"window." + this.setCellTypeKey + ".setCellType(" + '\'' + id + '\'' + ")\"" + ">";
                 gridContent += "</div>";
             }
             
@@ -108,6 +113,7 @@ class GridUi extends Grid
         $("." + this.gridClassName).append(gridContent);
 
         // Update the gridDestination as per the new grid size configuration
+        this.gridSource = "0_0";
         this.gridDestination = (this.rowCount - 1) + "_" + (this.colCount - 1);
 
         // Set Grid Colors as per color configuration
@@ -210,7 +216,7 @@ class GridUi extends Grid
         // Disable the Reset and Re-Run Animation button by default
         this.miscConfig.loadButtonDefaults();
     }
-    
+
 }
 
 class ColorConfig
