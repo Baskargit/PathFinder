@@ -58,8 +58,11 @@ class GridUi extends Grid
         this.setCellTypeKey = "";
 
         // GridCell properties
-        this.gridBorderWidth = 2;
-        this.gridCellSize = 35 + (this.gridBorderWidth * 2); // Border of both left and right
+        this.gridBorderWidth = 1;
+        this.gridCellSize = 25 + (this.gridBorderWidth * 2); // Border of both left and right
+
+        // Set Keyframes based on colorConfig
+        this.setKeyFrames();
     }
 
     generateGrid()
@@ -120,12 +123,47 @@ class GridUi extends Grid
         this.setGridColours();
     }
 
-    setCellColour(cellId,colour)
+    setCellColour(cellId,colour,isHover = false)
     {
         if (cellId != null && colour != null) 
         {
             $("#" + cellId).css("background-color",colour);
-        }    
+        }
+    }
+
+    setKeyFrames()
+    {
+        $.keyframe.define([
+        {
+            name: 'wallAnimation',
+            '0%': {
+              'transform': 'scale(.2)',
+              'background-color' : this.colorConfig.wallColour
+            },
+            '50%': {
+                'transform': 'scale(1.2)',
+                'background-color' : this.colorConfig.wallColour
+            },
+            '100%': {
+                'transform': 'scale(1)',
+                'background-color' : this.colorConfig.wallColour
+            }
+        },
+        {
+            name: 'nonWallAnimation',
+            '0%': {
+              'transform': 'scale(.9)',
+              'background-color' : this.colorConfig.nonWallColour
+            },
+            '50%': {
+                'transform': 'scale(0.4)',
+                'background-color' : this.colorConfig.nonWallColour
+            },
+            '100%': {
+                'transform': 'scale(1)',
+                'background-color' : this.colorConfig.nonWallColour
+            }
+        }]);
     }
 
     setTraverseCellAnimation(cellId,duration) 
@@ -199,7 +237,7 @@ class GridUi extends Grid
                     this.matrix[parseInt(splitted[0])][parseInt(splitted[1])] = value;
 
                     // Update UI with appropriate colour as per configuration settings
-                    this.setCellColour(posId,(value == 1) ? this.colorConfig.wallColour : this.colorConfig.nonWallColour);
+                    this.setCellColour(posId,(value == 1) ? this.colorConfig.wallColour : this.colorConfig.nonWallColour,true);
                 }
             }
         } 
@@ -226,9 +264,9 @@ class ColorConfig
         // Default Color configurations
         this.sourceColor = "red";
         this.destinationColor = "green";
-        this.wallColour = "black";
+        this.wallColour = "#0c3547";
         this.nonWallColour = "transparent";
-        this.traversedColor = "blue";
+        this.traversedColor = "yellow";
         this.gridColour = "blueviolet";
         this.revTraverseColor = "transparent";
     }

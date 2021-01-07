@@ -5,3 +5,42 @@
     <div class="grid-column"></div>
     <div class="grid-column"></div>
 </div>
+
+if (isHover) 
+            {
+                if (colour === this.colorConfig.wallColour) 
+                {
+                    $("." + this.gridClassName).addClass('prevent-click');
+
+                    console.log(this.gridClassName);
+
+                    $("#" + cellId).playKeyframe({
+                        name: 'wallAnimation',
+                        duration: '0.4s',
+                        timingFunction: 'ease-out',
+                        iterationCount: '1',
+                        direction: 'alternate',
+                        fillMode: 'forwards',
+                        complete: () => {} 
+                    });
+
+                    $("." + this.gridClassName).removeClass(["prevent-click"]);
+                    
+                }
+                else
+                {
+                    $("#" + cellId).playKeyframe({
+                        name: 'nonWallAnimation',
+                        duration: '0.2s',
+                        timingFunction: 'ease-in',
+                        iterationCount: "1",
+                        direction: 'normal',
+                        fillMode: 'forwards',
+                        complete: () => {} 
+                    });
+                }
+            }
+            else
+            {
+                $("#" + cellId).css("background-color",colour);
+            }

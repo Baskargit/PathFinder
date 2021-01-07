@@ -100,14 +100,30 @@ class ConfigurablePathFinder extends GridUi
             stop: (event, ui) =>
             {
                 // Map X cartesian co-ordinate with column in the matrix
-                this.sourceX = (ui.position.left != 0) ? ui.position.left/this.gridCellSize : 0;
+                var tempsourceX = (ui.position.left != 0) ? ui.position.left/this.gridCellSize : 0;
                 // Map Y cartesian co-ordinate with row in the matrix
-                this.sourceY = (ui.position.top != 0) ? ui.position.top/this.gridCellSize : 0;
+                var tempsourceY = (ui.position.top != 0) ? ui.position.top/this.gridCellSize : 0;
 
-                // Update the source position
-                this.gridSource = this.sourceY + "_" + this.sourceX;
+                if (tempsourceX != this.destinationX || tempsourceY != this.destinationY) 
+                {
+                    this.sourceX = tempsourceX;
+                    this.sourceY = tempsourceY;
 
-                console.log(this.sourceY + "," + this.sourceX);
+                    // Update the source position
+                    this.gridSource = this.sourceY + "_" + this.sourceX;
+
+                    console.log(this.sourceY + "," + this.sourceX);
+                }
+                else
+                {
+                    // If source and destination is same, then move source to the previous position
+                    $("." + this.draggableSourceKey).animate(
+                    {
+                        left : this.sourceX * this.gridCellSize + "px",
+                        top : this.sourceY * this.gridCellSize + "px",
+                    });
+                }
+                
             },
         });
 
@@ -118,14 +134,29 @@ class ConfigurablePathFinder extends GridUi
             stop: (event, ui) =>
             {
                 // Map X cartesian co-ordinate with column in the matrix
-                this.destinationX = (ui.position.left != 0) ? ((this.gridCellSize * (this.colCount - 1)) + ui.position.left)/this.gridCellSize : this.colCount - 1;
+                var tempDestinationX = (ui.position.left != 0) ? ((this.gridCellSize * (this.colCount - 1)) + ui.position.left)/this.gridCellSize : this.colCount - 1;
                 // Map Y cartesian co-ordinate with row in the matrix
-                this.destinationY = (ui.position.top != 0) ? ((this.gridCellSize * (this.rowCount - 1)) + ui.position.top)/this.gridCellSize: this.rowCount - 1;
+                var tempDestinationY = (ui.position.top != 0) ? ((this.gridCellSize * (this.rowCount - 1)) + ui.position.top)/this.gridCellSize: this.rowCount - 1;
 
-                // Update destination position
-                this.gridDestination = this.destinationY + "_" + this.destinationX;
+                if (tempDestinationX != this.sourceX || tempDestinationY != this.sourceY)
+                {
+                    this.destinationX = tempDestinationX;
+                    this.destinationY = tempDestinationY;
 
-                console.log(this.destinationY + "," + this.destinationX);
+                    // Update destination position
+                    this.gridDestination = this.destinationY + "_" + this.destinationX;
+
+                    console.log(this.destinationY + "," + this.destinationX);
+                }
+                else
+                {
+                    // If source and destination is same, then move source to the previous position
+                    $("." + this.draggableDestinationKey).animate(
+                    {
+                        left : ((this.destinationX != this.colCount - 1) ? -1 * ((this.colCount - this.destinationX - 1) * this.gridCellSize) : 0 ) + "px",
+                        top : ((this.destinationY != this.rowCount - 1) ? -1 * ((this.rowCount - this.destinationY - 1) * this.gridCellSize) : 0 ) + "px"
+                    });
+                }
             },
         });
         
