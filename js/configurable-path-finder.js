@@ -150,7 +150,7 @@ class ConfigurablePathFinder extends GridUi
                 }
                 else
                 {
-                    // If source and destination is same, then move source to the previous position
+                    // If source and destination is same, then move destination to the previous position
                     $("." + this.draggableDestinationKey).animate(
                     {
                         left : ((this.destinationX != this.colCount - 1) ? -1 * ((this.colCount - this.destinationX - 1) * this.gridCellSize) : 0 ) + "px",
