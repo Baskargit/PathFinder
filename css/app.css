@@ -14,6 +14,7 @@
     margin-bottom: 20px;
 }
 
+/* No more using this style, now using bootstrap built-in grid system */
 .grid-row
 {
     display: inherit;
@@ -48,7 +49,7 @@
     flex-direction: column;
 }
 
-.variables input
+/* .variables input
 {
     margin-bottom:10px;
 }
@@ -62,12 +63,17 @@
 {
     padding : 10px;
     border-radius: 10px;
-}
+} */
 
 /* Misc css configs */
 .prevent-click 
 {
     pointer-events: none;
+}
+
+.navlinkinactive
+{
+    color: grey !important;
 }
 
 

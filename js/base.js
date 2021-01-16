@@ -59,7 +59,8 @@ class GridUi extends Grid
 
         // GridCell properties
         this.gridBorderWidth = 1;
-        this.gridCellSize = 25 + (this.gridBorderWidth * 2); // Border of both left and right
+        this.gridCellSize = 25;
+        // this.gridCellSize = 25 + (this.gridBorderWidth * 2); // Border of both left and right
 
         // Set Keyframes based on colorConfig
         this.setKeyFrames();
@@ -71,7 +72,7 @@ class GridUi extends Grid
 
         for(var i = 0; i < this.rowCount; i++)
         {
-            gridContent += "<div class=\"grid-row\">";
+            gridContent += "<div class=\"row justify-content-center\">";
 
             for(var j = 0; j < this.colCount; j++)
             {
