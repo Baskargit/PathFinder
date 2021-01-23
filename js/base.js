@@ -70,6 +70,7 @@ class GridUi extends Grid
     generateGrid()
     {
         var gridContent = "";
+        var gridColumnStyle = " style = \"border: 1px solid " + this.colorConfig.cellBorderColor + " !important;" +  " height: " + this.gridCellSize + "px;"  + "width: " + this.gridCellSize + "px;" + "\"";
 
         for(var i = 0; i < this.rowCount; i++)
         {
@@ -78,7 +79,7 @@ class GridUi extends Grid
             for(var j = 0; j < this.colCount; j++)
             {
                 var id = i + "_" + j;
-                gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"window." + this.setCellTypeKey + ".setCellType(" + '\'' + id + '\'' + ")\"" + ">";
+                gridContent += "<div class=\"grid-column\" id=" + "\"" + id + "\"" + " onmouseover=" + "\"window." + this.setCellTypeKey + ".setCellType(" + '\'' + id + '\'' + ")\"" + gridColumnStyle +">";
                 gridContent += "</div>";
             }
             
@@ -267,16 +268,23 @@ class GridUi extends Grid
 
 class ColorConfig
 {
+    // Default Color configurations
     constructor()
     {
-        // Default Color configurations
-        this.sourceColor = "red";
-        this.destinationColor = "green";
-        this.wallColour = "#0c3547";
-        this.nonWallColour = "transparent";
-        this.traversedColor = "yellow";
-        this.gridColour = "blueviolet";
-        this.revTraverseColor = "transparent";
+        // Source and Destination
+        this.sourceColor = "#FF0000";
+        this.destinationColor = "#008000";
+
+        // Wall
+        this.wallColour = "#0C3547";
+        this.nonWallColour = "#FFFFFF00";
+
+        // Flow
+        this.traversedColor = "#FFFF00";
+        this.revTraverseColor = "#FFFFFF00"; 
+
+        // Cell Border color
+        this.cellBorderColor = "#AFD8F8";
     }
 }
 
