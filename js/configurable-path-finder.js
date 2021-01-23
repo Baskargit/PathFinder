@@ -283,6 +283,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Re-Run Animation button clicked
     document.getElementById("reRunAnimation").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        configurablePathFinder.miscConfig.closeConfigureModal();
+
         // Disable both the Re-Run and Reset button to avoid unwanted glitches on UI while rendering (if user click other buttons, animations may vary and show weird animations)
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.reRunAnimationButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.resetButtonId);
@@ -322,6 +325,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Reset button clicked
     document.getElementById("reset").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        configurablePathFinder.miscConfig.closeConfigureModal();
+
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.resetButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.reRunAnimationButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.updateCurrentGridButtonId);
@@ -356,6 +362,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Update button clicked
     document.getElementById("updateCurrentGrid").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        configurablePathFinder.miscConfig.closeConfigureModal();
+        
         // Disbale buttons
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.updateCurrentGridButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.resetButtonId);

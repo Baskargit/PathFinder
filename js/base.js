@@ -60,6 +60,7 @@ class GridUi extends Grid
         // GridCell properties
         this.gridBorderWidth = 1;
         this.gridCellSize = 25;
+        this.gridWidth = this.gridCellSize * col;
         // this.gridCellSize = 25 + (this.gridBorderWidth * 2); // Border of both left and right
 
         // Set Keyframes based on colorConfig
@@ -112,6 +113,9 @@ class GridUi extends Grid
 
         // Generate Grid content based on the Grid configuration
         var gridContent = this.generateGrid();
+
+        // Set the grid width
+        $("." + this.gridClassName).css("max-width",this.gridWidth + "px");
 
         // Add all the cell blocks to UI grid
         $("." + this.gridClassName).append(gridContent);
@@ -246,8 +250,11 @@ class GridUi extends Grid
     
     updateGridConfiguration()
     {
-        // Update matrix as per new RowCount value with default value 0
+        // Update matrix as per new configuration with default value 0
         this.updateMatrix(this.rowCount,this.colCount,0);
+
+        // Update the grid Wdith as per the new configuration
+        this.gridWidth = this.gridCellSize * this.colCount;
 
         // Update the grid UI as per new RowCount value
         this.drawGrid();
@@ -323,5 +330,10 @@ class MiscConfig
         this.disableButton(this.resetButtonId);
         this.disableButton(this.updateCurrentGridButtonId);
         this.enableButton(this.findPathButtonId);
+    }
+
+    closeConfigureModal()
+    {
+        $('#configureModal').modal('hide');
     }
 }

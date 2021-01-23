@@ -112,6 +112,9 @@ document.addEventListener("DOMContentLoaded", function()
     // FindPath button clicked
     document.getElementById("findPath").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        simplePathFinder.miscConfig.closeConfigureModal();
+
         // Disable buttons
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.findPathButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.rowCountInputId);
@@ -163,6 +166,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Re-Run Animation button clicked
     document.getElementById("reRunAnimation").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        simplePathFinder.miscConfig.closeConfigureModal();
+        
         // Disable both the Re-Run and Reset button to avoid unwanted glitches on UI while rendering (if user click other buttons, animations may vary and show weird animations)
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.reRunAnimationButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.resetButtonId);
@@ -202,6 +208,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Reset button clicked
     document.getElementById("reset").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        simplePathFinder.miscConfig.closeConfigureModal();
+
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.resetButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.reRunAnimationButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.updateCurrentGridButtonId);
@@ -233,6 +242,9 @@ document.addEventListener("DOMContentLoaded", function()
     // Update button clicked
     document.getElementById("updateCurrentGrid").addEventListener('click', function()
     {
+        // Close ConfigureModal dialog box
+        simplePathFinder.miscConfig.closeConfigureModal();
+
         // Disbale buttons
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.updateCurrentGridButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.resetButtonId);

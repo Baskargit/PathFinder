@@ -34,14 +34,6 @@
                     <a class="nav-link navlinkinactive" href="ConfigurablePathFinder.html">Configurable</a>
                 </li>
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#configureModal">Configure</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-success ml-2" id="findPath" type="button">Visualize</button>
-                </li>
-            </ul>
         </div>
     </header>
 
@@ -49,7 +41,7 @@
         <!-- Grid to display Matrix -->
         <div class="row mt-4">
             <div class="col">
-                <div class="grid">
+                <div class="grid mx-auto">
                 </div>
             </div>
         </div>
@@ -97,6 +89,12 @@
         </div>
 
     </div>
+
+    <!-- Footer content -->
+    <footer class="bg-dark mx-auto text-center fixed-bottom">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#configureModal">Configure</button>
+        <button class="btn btn-success ml-2" id="findPath" type="button">Visualize</button>
+    </footer>
 
   </body>
 </html>

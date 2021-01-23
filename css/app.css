@@ -1,24 +1,7 @@
-/* Flex Properties style */
-
-.flex-container
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+/* Grid styling section */
 .grid
 {
-    display: inherit;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-
-/* No more using this style, now using bootstrap built-in grid system */
-.grid-row
-{
-    display: inherit;
-    flex-direction: row;
+    margin-bottom: 75px;
 }
 
 .grid-column
@@ -27,43 +10,6 @@
     width: 25px;
     border: 1px solid #afd8f8;
 }
-
-/* Variable section styling */
-
-.variables
-{
-    display: inherit;
-    flex-direction: column;
-}
-
-.rowContainer
-{
-    display: inherit;
-    flex-direction: row;
-    margin-right: 5px;
-}
-
-.columnContainer
-{
-    display: inherit;
-    flex-direction: column;
-}
-
-/* .variables input
-{
-    margin-bottom:10px;
-}
-
-.variables input[type="number"]
-{
-    padding : 5px;
-}
-
-.variables input[type="button"]
-{
-    padding : 10px;
-    border-radius: 10px;
-} */
 
 /* Misc css configs */
 .prevent-click 
@@ -76,36 +22,9 @@
     color: grey !important;
 }
 
-
-
-/* Animation class */
-
-/* .wall
+/* Footer css */
+footer
 {
-    animation-name: wallAnimation;
-    animation-duration: 0.4s;
-    animation-play-state: running;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-    animation-timing-function:ease-out;
-    animation-direction: alternate;
+    padding: 10px 0px;
+    margin-bottom: 1px;
 }
-
-@keyframes wallAnimation 
-{
-    0%
-    {
-        transform: scale(.3);
-        background-color: black;
-    }
-    50%
-    {
-        transform: scale(1.2);
-        background-color: black;
-    }
-    100%
-    {
-        transform: scale(1.0);
-        background-color: black;
-    }
-} */
