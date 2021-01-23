@@ -233,6 +233,8 @@ document.addEventListener("DOMContentLoaded", function()
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.findPathButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.rowCountInputId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.columnCountInputId);
+        configurablePathFinder.miscConfig.disableDiv(configurablePathFinder.miscConfig.configureColorDiv,true);
+        configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.gridCellSizeSliderId);
 
         // Update row and column values
         $("#" + configurablePathFinder.miscConfig.rowCountInputId).val(configurablePathFinder.rowCount);
@@ -331,6 +333,8 @@ document.addEventListener("DOMContentLoaded", function()
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.resetButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.reRunAnimationButtonId);
         configurablePathFinder.miscConfig.disableButton(configurablePathFinder.miscConfig.updateCurrentGridButtonId);
+        configurablePathFinder.miscConfig.enableDiv(configurablePathFinder.miscConfig.configureColorDiv,true);
+        configurablePathFinder.miscConfig.enableButton(configurablePathFinder.miscConfig.gridCellSizeSliderId);
 
         // Reset all the traversed path colour
         configurablePathFinder.drawDestinationToSource(configurablePathFinder.traversedPaths);
@@ -422,5 +426,30 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
+
+    // When Color Picker color changed
+    document.getElementById("colorPicker").addEventListener('change',function () 
+    {
+        // Update color as per the selected HEX value
+        // See the function implementation section for more clarity
+        // It performs more than color update, it redraw the grid
+        configurablePathFinder.updateColor(this.value,true);
+
+        // Make source and destination as draggable
+        configurablePathFinder.addDraggable();
+    });
+
+    // When GridCell Border width changed
+    // document.getElementById(configurablePathFinder.miscConfig.gridBorderSizeSliderId).addEventListener('change',function () 
+    // {
+    //     // Get the value
+    //     var newSize = parseInt($("#"+ configurablePathFinder.miscConfig.gridBorderSizeSliderId).val());
+
+    //     // Update the Grid cell size
+    //     configurablePathFinder.updateGridBorderWidth(newSize,true);
+
+    //     // Make source and destination as draggable
+    //     configurablePathFinder.addDraggable();
+    // });
 
 });

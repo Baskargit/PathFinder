@@ -84,11 +84,35 @@
                                 <button type="button" id="reRunAnimation" class="btn btn-primary">Re-Run Animation</button>
                             </div>
                             <div class="form-group">
-                                <button type="button" id="reset" class="btn btn-primary">Reset</button>
-                            </div>
-                            <div class="form-group">
                                 <button type="button" id="updateCurrentGrid" class="btn btn-primary">Update Grid</button>
                             </div>
+                            <div class="form-group">
+                                <button type="button" id="reset" class="btn btn-primary">Reset</button>
+                            </div>
+                            <div class="form-group btn-group dropup" id="configureColorDiv">
+                                <button type="button" class="btn btn-success" id="changeColorBtn" value="">ChangeColor</button>
+                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                                </button>
+                                <button type="button" class="btn btn-danger">
+                                    <input type="color" id = "colorPicker"/>
+                                </button>
+                                <div class="dropdown-menu" id="changeColorDropup">
+                                  <p class="dropdown-item" value="GCB">GridCellBorder</p>
+                                  <p class="dropdown-item" value="WAL">Wall</p>
+                                  <p class="dropdown-item" value="NWL">Non-Wall</p>
+                                  <p class="dropdown-item" value="TVS">Traverse</p>
+                                  <p class="dropdown-item" value="SRC">Source</p>
+                                  <p class="dropdown-item" value="DES">Destination</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="gridCellSizeSlider">Grid Cell</label>
+                                <input type="range" id="gridCellSizeSlider" min="10" max="100" value = "25" class="form-control"/>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="gridBorderSizeSlider">Grid Border</label>
+                                <input type="range" id="gridBorderSizeSlider" min="1" max="10" value = "1" class="form-control"/>
+                            </div> -->
                         </form>
                     </div>
                     <div class="modal-footer">

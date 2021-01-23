@@ -63,6 +63,10 @@ class GridUi extends Grid
         this.gridWidth = this.gridCellSize * col;
         // this.gridCellSize = 25 + (this.gridBorderWidth * 2); // Border of both left and right
 
+        // Register Events
+        this.registerColorConfigEvent();
+        this.registerGridCellSizeChangeEvent();
+
         // Set Keyframes based on colorConfig
         this.setKeyFrames();
     }
@@ -70,7 +74,7 @@ class GridUi extends Grid
     generateGrid()
     {
         var gridContent = "";
-        var gridColumnStyle = " style = \"border: 1px solid " + this.colorConfig.cellBorderColor + " !important;" +  " height: " + this.gridCellSize + "px;"  + "width: " + this.gridCellSize + "px;" + "\"";
+        var gridColumnStyle = " style = \"border: " + this.gridBorderWidth + "px solid " + this.colorConfig.cellBorderColor + " !important;" +  " height: " + this.gridCellSize + "px;"  + "width: " + this.gridCellSize + "px;" + "\"";
 
         for(var i = 0; i < this.rowCount; i++)
         {
@@ -116,7 +120,7 @@ class GridUi extends Grid
         var gridContent = this.generateGrid();
 
         // Set the grid width
-        $("." + this.gridClassName).css("max-width",this.gridWidth + "px");
+        $("." + this.gridClassName).css("width",this.gridWidth + "px");
 
         // Add all the cell blocks to UI grid
         $("." + this.gridClassName).append(gridContent);
@@ -264,6 +268,93 @@ class GridUi extends Grid
         this.miscConfig.loadButtonDefaults();
     }
 
+    updateColor(newColor = "",isReload = false)
+    {
+        const isColor = (newColor) => 
+        {
+            const s = new Option().style;
+            s.color = newColor;
+            return s.color !== '';
+        }
+
+        // Get last clicked item
+        var item = $("#changeColorBtn").attr('value');
+
+        if (item != null && item != "" && isColor) 
+        {
+            switch (item) 
+            {
+                case "GCB":
+                    this.colorConfig.cellBorderColor = newColor;
+                    break;
+
+                case "WAL":
+                    this.colorConfig.wallColour = newColor;
+                    break;
+
+                case "NWL":
+                    this.colorConfig.nonWallColour = newColor;
+                    break;
+
+                case "TVS":
+                    this.colorConfig.traversedColor = newColor;
+                    break;
+
+                case "SRC":
+                    this.colorConfig.sourceColor = newColor;
+                    break;
+
+                case "DES":
+                    this.colorConfig.destinationColor = newColor;
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        if (isReload) {
+            this.updateGridConfiguration();
+        }
+    }
+
+    updateGridBorderWidth(newSize = 1,isReload = false)
+    {
+        this.gridBorderWidth = newSize;
+
+        if (isReload) 
+        {
+            this.updateGridConfiguration();
+        }
+    }
+
+    registerColorConfigEvent()
+    {
+        $("#changeColorDropup p").click(function ()
+        {
+            // Get the currently clicked item value
+            // Update the Text and value for the DropUp button based on the selected item from the list
+           $("#changeColorBtn").attr('value',$(this).attr('value'));
+           $("#changeColorBtn").html($(this).text());
+        });
+    }
+
+    registerGridCellSizeChangeEvent()
+    {
+        $("#" + this.miscConfig.gridCellSizeSliderId).on("change", () =>
+        {
+            // Get the value
+            var newSize = parseInt($("#"+ this.miscConfig.gridCellSizeSliderId).val());
+
+            // Update the Grid cell size
+            this.gridCellSize = newSize;
+
+            // Render the grid with updated configuration
+            this.updateGridConfiguration();
+        });
+    }
+
+
 }
 
 class ColorConfig
@@ -314,6 +405,13 @@ class MiscConfig
         // input Id configurations
         this.rowCountInputId = "rowCount";
         this.columnCountInputId = "columnCount";
+
+        // Div Id configurations
+        this.configureColorDiv = "configureColorDiv";
+
+        // Slider configurations
+        this.gridCellSizeSliderId = "gridCellSizeSlider";
+        this.gridBorderSizeSliderId = "gridBorderSizeSlider";
     }
 
     disableButton(buttonId) 
@@ -321,6 +419,36 @@ class MiscConfig
         if (buttonId != null) 
         {
             $('#' + buttonId).prop('disabled', true);   
+        }
+    }
+
+    disableDiv(divId,disableAllDescendants = false)
+    {
+        if ($("#" + divId).length) 
+        {
+            if (disableAllDescendants) 
+            {
+                $("#" + divId + " *").prop('disabled',true);    
+            }
+            else
+            {
+                $("#" + divId).prop('disabled',true);
+            }
+        }
+    }
+
+    enableDiv(divId,enableAllDescendants = false)
+    {
+        if ($("#" + divId).length) 
+        {
+            if (enableAllDescendants) 
+            {
+                $("#" + divId + " *").prop('disabled',false);    
+            }
+            else
+            {
+                $("#" + divId).prop('disabled',false);
+            }
         }
     }
 
