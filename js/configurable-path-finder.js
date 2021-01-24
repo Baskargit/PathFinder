@@ -173,7 +173,7 @@ class ConfigurablePathFinder extends GridUi
 // Make sure first the DOM content is loaded => so that the order of the file load doesn't matter
 document.addEventListener("DOMContentLoaded", function()
 {
-    // Instantiate SimplePathFinder object 
+    // Instantiate ConfigurablePathFinder object 
     // Note : All functionalities of the configurablePathFinder will going to use this object only
     var configurablePathFinder = new ConfigurablePathFinder();
 

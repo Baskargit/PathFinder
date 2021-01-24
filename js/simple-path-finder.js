@@ -90,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function()
             simplePathFinder.rowCount = parsed;
 
             simplePathFinder.updateGridConfiguration();
+
+            // Update the new value to the row count input field
+            $("#" + simplePathFinder.miscConfig.rowCountInputId).val(simplePathFinder.rowCount);
         }
         
     });
@@ -106,6 +109,9 @@ document.addEventListener("DOMContentLoaded", function()
             simplePathFinder.colCount = parsed;
 
             simplePathFinder.updateGridConfiguration();
+
+            // Update the new value to the column count input field
+            $("#" + simplePathFinder.miscConfig.columnCountInputId).val(simplePathFinder.colCount);
         }
     });
 
@@ -119,6 +125,8 @@ document.addEventListener("DOMContentLoaded", function()
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.findPathButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.rowCountInputId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.columnCountInputId);
+        simplePathFinder.miscConfig.disableDiv(simplePathFinder.miscConfig.configureColorDiv,true);
+        simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.gridCellSizeSliderId);
 
         // Update row and column values
         $("#" + simplePathFinder.miscConfig.rowCountInputId).val(simplePathFinder.rowCount);
@@ -214,6 +222,8 @@ document.addEventListener("DOMContentLoaded", function()
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.resetButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.reRunAnimationButtonId);
         simplePathFinder.miscConfig.disableButton(simplePathFinder.miscConfig.updateCurrentGridButtonId);
+        simplePathFinder.miscConfig.enableDiv(simplePathFinder.miscConfig.configureColorDiv,true);
+        simplePathFinder.miscConfig.enableButton(simplePathFinder.miscConfig.gridCellSizeSliderId);
 
         // Reset all the traversed path colour
         simplePathFinder.drawDestinationToSource(simplePathFinder.traversedPaths);
@@ -299,5 +309,34 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
+
+    // When Color Picker color changed
+    document.getElementById("colorPicker").addEventListener('change',function () 
+    {
+        // Update color as per the selected HEX value
+        // See the function implementation section for more clarity
+        // It performs more than color update, it redraw the grid
+        simplePathFinder.updateColor(this.value,true);
+    });
+
+    // When GridCell size changed
+    document.getElementById(simplePathFinder.miscConfig.gridCellSizeSliderId).addEventListener('change',function () 
+    {
+        // Get the value
+        var newSize = parseInt($("#"+ simplePathFinder.miscConfig.gridCellSizeSliderId).val());
+
+        // Update the Grid cell size
+        simplePathFinder.updateGridCellSize(newSize,true);
+    });
+
+    // When GridCell Border width changed
+    // document.getElementById(simplePathFinder.miscConfig.gridBorderSizeSliderId).addEventListener('change',function () 
+    // {
+    //     // Get the value
+    //     var newSize = parseInt($("#"+ simplePathFinder.miscConfig.gridBorderSizeSliderId).val());
+
+    //     // Update the Grid cell size
+    //     simplePathFinder.updateGridBorderWidth(newSize,true);
+    // });
 
 });
