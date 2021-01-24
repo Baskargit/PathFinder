@@ -204,6 +204,9 @@ document.addEventListener("DOMContentLoaded", function()
 
             // Make source and destination as draggable as per new grid size configuration
             configurablePathFinder.addDraggable();
+
+            // Update the new value to the row count input field
+            $("#" + configurablePathFinder.miscConfig.rowCountInputId).val(configurablePathFinder.rowCount);
         }
         
     });
@@ -223,6 +226,9 @@ document.addEventListener("DOMContentLoaded", function()
 
             // Make source and destination as draggable as per new grid size configuration
             configurablePathFinder.addDraggable();
+
+            // Update the new value to the column count input field
+            $("#" + configurablePathFinder.miscConfig.columnCountInputId).val(configurablePathFinder.colCount);
         }
     });
 
@@ -434,6 +440,19 @@ document.addEventListener("DOMContentLoaded", function()
         // See the function implementation section for more clarity
         // It performs more than color update, it redraw the grid
         configurablePathFinder.updateColor(this.value,true);
+
+        // Make source and destination as draggable
+        configurablePathFinder.addDraggable();
+    });
+
+    // When GridCell size changed
+    document.getElementById(configurablePathFinder.miscConfig.gridCellSizeSliderId).addEventListener('change',function () 
+    {
+        // Get the value
+        var newSize = parseInt($("#"+ configurablePathFinder.miscConfig.gridCellSizeSliderId).val());
+
+        // Update the Grid cell size
+        configurablePathFinder.updateGridCellSize(newSize,true);
 
         // Make source and destination as draggable
         configurablePathFinder.addDraggable();

@@ -65,7 +65,6 @@ class GridUi extends Grid
 
         // Register Events
         this.registerColorConfigEvent();
-        this.registerGridCellSizeChangeEvent();
 
         // Set Keyframes based on colorConfig
         this.setKeyFrames();
@@ -255,6 +254,17 @@ class GridUi extends Grid
     
     updateGridConfiguration()
     {
+        var isContained = ((window.innerWidth - 30) - this.gridCellSize * this.colCount >= 0) ? true : false;
+
+        this.colCount = (isContained) 
+            ? this.colCount
+            : ~~((window.innerWidth - 30) / this.gridCellSize) ;
+        
+        if (!isContained) 
+        {
+            window.alert("Given column setting exceeds the screen width, so current column count is " + this.colCount);
+        }
+
         // Update matrix as per new configuration with default value 0
         this.updateMatrix(this.rowCount,this.colCount,0);
 
@@ -266,6 +276,7 @@ class GridUi extends Grid
 
         // Disable the Reset and Re-Run Animation button by default
         this.miscConfig.loadButtonDefaults();
+        
     }
 
     updateColor(newColor = "",isReload = false)
@@ -318,6 +329,16 @@ class GridUi extends Grid
         }
     }
 
+    updateGridCellSize(newSize = 25,isReload = false)
+    {
+        this.gridCellSize = newSize;
+
+        if (isReload) 
+        {
+            this.updateGridConfiguration();
+        }
+    }
+
     updateGridBorderWidth(newSize = 1,isReload = false)
     {
         this.gridBorderWidth = newSize;
@@ -338,22 +359,6 @@ class GridUi extends Grid
            $("#changeColorBtn").html($(this).text());
         });
     }
-
-    registerGridCellSizeChangeEvent()
-    {
-        $("#" + this.miscConfig.gridCellSizeSliderId).on("change", () =>
-        {
-            // Get the value
-            var newSize = parseInt($("#"+ this.miscConfig.gridCellSizeSliderId).val());
-
-            // Update the Grid cell size
-            this.gridCellSize = newSize;
-
-            // Render the grid with updated configuration
-            this.updateGridConfiguration();
-        });
-    }
-
 
 }
 
