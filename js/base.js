@@ -254,16 +254,8 @@ class GridUi extends Grid
     
     updateGridConfiguration()
     {
-        var isContained = ((window.innerWidth - 30) - this.gridCellSize * this.colCount >= 0) ? true : false;
-
-        this.colCount = (isContained) 
-            ? this.colCount
-            : ~~((window.innerWidth - 30) / this.gridCellSize) ;
-        
-        if (!isContained) 
-        {
-            window.alert("Given column setting exceeds the screen width, so current column count is " + this.colCount);
-        }
+        // Check grid settings provided by the user is valid (or) not
+        this.isGridSettingValid(true);
 
         // Update matrix as per new configuration with default value 0
         this.updateMatrix(this.rowCount,this.colCount,0);
@@ -277,6 +269,38 @@ class GridUi extends Grid
         // Disable the Reset and Re-Run Animation button by default
         this.miscConfig.loadButtonDefaults();
         
+    }
+
+    isGridSettingValid(showInvalidMesg = false)
+    {
+        var isWidthContained = ((window.innerWidth - 30) - this.gridCellSize * this.colCount >= 0) ? true : false;
+
+        this.colCount = (isWidthContained) 
+            ? this.colCount
+            : Math.floor((window.innerWidth - 30) / this.gridCellSize) ;
+        
+        if (showInvalidMesg && !isWidthContained) 
+        {
+            window.alert("Given column setting exceeds the screen width, so current column count is " + this.colCount);
+        }
+
+        // Header + Footer + Margin-Top of the grid row
+        var occupiedHeight = $("header").outerHeight() + $("footer").outerHeight() + parseInt($('.container-fluid .row').first().css('margin-top')) + 15;
+        var currentGridHeight = this.rowCount * this.gridCellSize;
+        
+        var isHeightContained = (occupiedHeight + currentGridHeight <= window.innerHeight) 
+            ? true
+            : false;
+
+        if (showInvalidMesg && !isHeightContained) 
+        {
+            window.alert("Given height setting exceeds the screen height, so current row count is " + this.rowCount);
+        }   
+
+        this.rowCount = (isHeightContained) 
+        ? this.rowCount 
+        : Math.floor((window.innerHeight - occupiedHeight)/this.gridCellSize);
+
     }
 
     updateColor(newColor = "",isReload = false)
