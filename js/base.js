@@ -281,7 +281,7 @@ class GridUi extends Grid
         
         if (showInvalidMesg && !isWidthContained) 
         {
-            window.alert("Given column setting exceeds the screen width, so current column count is " + this.colCount);
+            window.alert("Given column count exceeds the screen width, so current column count is " + this.colCount);
         }
 
         // Header + Footer + Margin-Top of the grid row
@@ -294,7 +294,7 @@ class GridUi extends Grid
 
         if (showInvalidMesg && !isHeightContained) 
         {
-            window.alert("Given height setting exceeds the screen height, so current row count is " + this.rowCount);
+            window.alert("Given row count exceeds the screen height, so current row count is " + this.rowCount);
         }   
 
         this.rowCount = (isHeightContained) 
